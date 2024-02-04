@@ -19,7 +19,6 @@ public class OrderService {
     private final PromoService promoService;
     private final PaymentService paymentService;
 
-    @SuppressWarnings("unused")
     public void acceptSubscription(Order order) throws ClientNotExistException,
             SubscriptionNotAvailable, NotEnoughMoneyException, PaymentException {
 
