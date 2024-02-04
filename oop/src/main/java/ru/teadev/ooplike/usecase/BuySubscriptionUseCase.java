@@ -5,6 +5,7 @@ import ru.teadev.ooplike.entity.Client;
 import ru.teadev.ooplike.entity.ClientId;
 import ru.teadev.ooplike.entity.Order;
 import ru.teadev.ooplike.entity.Subscription;
+import ru.teadev.ooplike.entity.SubscriptionId;
 import ru.teadev.ooplike.exceptions.ClientNotExistException;
 import ru.teadev.ooplike.exceptions.NotEnoughMoneyException;
 import ru.teadev.ooplike.exceptions.PaymentException;
@@ -29,12 +30,12 @@ public class BuySubscriptionUseCase {
             SubscriptionNotAvailable, NotEnoughMoneyException, PaymentException {
 
         ClientId clientId = order.getClientId();
-
         Client client = clientExtractor.findClient(clientId)
                 .orElseThrow(() -> new ClientNotExistException(clientId));
 
-        Subscription subscription = subscriptionExtractor.findSubscription(order.getSubscriptionId())
-                .orElseThrow(() -> new SubscriptionNotAvailable(order.getSubscriptionId()));
+        SubscriptionId subscriptionId = order.getSubscriptionId();
+        Subscription subscription = subscriptionExtractor.findSubscription(subscriptionId)
+                .orElseThrow(() -> new SubscriptionNotAvailable(subscriptionId));
 
 
         client.buySubscription(subscription, promoProvider, paymentProvider);
