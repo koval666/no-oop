@@ -9,7 +9,7 @@ import ru.teadev.nooop.fplike.entity.Subscription;
 @RequiredArgsConstructor
 public class PromoService {
 
-    public Discount getDiscount(Client client, Subscription subscription) {
+    public Discount calculateDiscount(Client client, Subscription subscription) {
         return new Discount();
     }
 

@@ -32,7 +32,7 @@ public class OrderService {
             throw new SubscriptionNotAvailable(subscription);
         }
 
-        Discount discount = promoService.getDiscount(client, subscription);
+        Discount discount = promoService.calculateDiscount(client, subscription);
         Price price = promoService.applyDiscount(subscription.getBasePrice(), discount);
 
         if (!clientService.isEnoughMoney(client, price)) {
