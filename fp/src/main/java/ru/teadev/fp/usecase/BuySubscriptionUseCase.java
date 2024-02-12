@@ -6,7 +6,6 @@ import ru.teadev.fp.entity.Discount;
 import ru.teadev.fp.entity.Order;
 import ru.teadev.fp.entity.Price;
 import ru.teadev.fp.entity.Subscription;
-import ru.teadev.fp.exceptions.CantBuySubscriptionException;
 import ru.teadev.fp.exceptions.ClientNotExistException;
 import ru.teadev.fp.exceptions.NotEnoughMoneyException;
 import ru.teadev.fp.exceptions.PaymentException;
@@ -25,32 +24,29 @@ public class BuySubscriptionUseCase {
     private final PaymentService paymentService;
 
     @SuppressWarnings("unused")
-    public void execute(Order order) throws CantBuySubscriptionException {
-        try {
-            Client client = order.getClient();
-            if (!clientService.isClientExist(client)) {
-                throw new ClientNotExistException(client);
-            }
+    public void execute(Order order) throws ClientNotExistException,
+            SubscriptionNotAvailable, NotEnoughMoneyException, PaymentException {
 
-            Subscription subscription = order.getSubscription();
-            if (!subscriptionService.isSubscriptionAvailable(subscription)) {
-                throw new SubscriptionNotAvailable(subscription);
-            }
-
-            Discount discount = promoService.calculateDiscount(client, subscription);
-            Price price = promoService.applyDiscount(subscription.getBasePrice(), discount);
-
-            if (!clientService.isEnoughMoney(client, price)) {
-                throw new NotEnoughMoneyException(client, price);
-            }
-
-            paymentService.makePayment(client, subscription, price);
-
-            subscriptionService.activateSubscription(client, subscription);
-
-        } catch (ClientNotExistException | SubscriptionNotAvailable | NotEnoughMoneyException | PaymentException e) {
-            throw new CantBuySubscriptionException(e);
+        Client client = order.getClient();
+        if (!clientService.isClientExist(client)) {
+            throw new ClientNotExistException(client);
         }
+
+        Subscription subscription = order.getSubscription();
+        if (!subscriptionService.isSubscriptionAvailable(subscription)) {
+            throw new SubscriptionNotAvailable(subscription);
+        }
+
+        Discount discount = promoService.calculateDiscount(client, subscription);
+        Price price = promoService.applyDiscount(subscription.getBasePrice(), discount);
+
+        if (!clientService.isEnoughMoney(client, price)) {
+            throw new NotEnoughMoneyException(client, price);
+        }
+
+        paymentService.makePayment(client, subscription, price);
+
+        subscriptionService.activateSubscription(client, subscription);
     }
 
 }
